@@ -1,0 +1,33 @@
+import pandas as pd
+tabela = pd.read_csv('clientes.csv')
+
+from sklearn.preprocessing import LabelEncoder
+cod = LabelEncoder()
+for coluna in tabela.columns:
+    if tabela[coluna].dtype == "object" and coluna != "score_credito":
+        tabela[coluna] = cod.fit_transform(tabela[coluna])
+
+x = tabela.drop(["score_credito", "id_cliente"], axis = 1)
+y = tabela['score_credito']
+from sklearn.model_selection import train_test_split
+x_treino, x_teste, y_treino, y_teste = train_test_split(x, y, train_size=0.80, random_state=1)
+
+from sklearn.ensemble import RandomForestClassifier 
+arvore = RandomForestClassifier()
+arvore.fit(x_treino, y_treino)
+
+from sklearn.metrics import accuracy_score
+previsao_arvore = arvore.predict(x_teste)
+print(accuracy_score(y_teste, previsao_arvore)) 
+
+#ajeitar final do código
+
+#novos clientes - previsão
+novos_clientes = pd.read_csv('novos_clientes.csv')
+for coluna in novos_clientes.columns:
+    if novos_clientes[coluna].dtype == "object" and coluna != "score_credito":
+        novos_clientes[coluna] = cod.fit_transform(novos_clientes[coluna])
+    
+prev = arvore.predict(novos_clientes)
+
+print(prev)
