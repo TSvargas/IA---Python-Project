@@ -31,3 +31,7 @@ for coluna in novos_clientes.columns:
 prev = arvore.predict(novos_clientes)
 
 print(prev)
+
+score_credito = prev
+novos_clientes['score_credito'] = score_credito
+print (novos_clientes)
